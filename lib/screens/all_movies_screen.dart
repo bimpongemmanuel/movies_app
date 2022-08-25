@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:my_movie_app/Models/movies_models.dart';
 import 'package:my_movie_app/network/all_movies_network.dart';
 import 'package:my_movie_app/screens/movie_details_screen.dart';
 
@@ -12,11 +13,13 @@ class AllMoviesScreen extends StatefulWidget {
 
 class _AllMoviesScreenState extends State<AllMoviesScreen> {
 
-  AllMoviesNetwork _allMoviesNetwork = AllMoviesNetwork();
+  final AllMoviesNetwork _allMoviesNetwork = AllMoviesNetwork();
+
+  Future<List<MoviesModel>>? getMovies;
 
   @override
   void initState() {
-    _allMoviesNetwork.getAllMovies();
+   getMovies = _allMoviesNetwork.getAllMovies();
     super.initState();
   }
   @override
@@ -24,20 +27,37 @@ class _AllMoviesScreenState extends State<AllMoviesScreen> {
     return Scaffold(
       backgroundColor: const Color(0xffE8E7E7),
       appBar: allMoviesAppBar(context),
-      body: ListView.builder(
-        itemCount:20,
-        itemBuilder:(context,index) {
-          return GestureDetector(
-            child: MyMoviesCard(),
-            onTap: (){
-              Navigator.push(
-                context,
-                 MaterialPageRoute(
-                  builder: (context) {
-                return MovieDetailsScreen(currentIndex: index,);
-              },));
-            },
+      body: FutureBuilder<List<MoviesModel>>(
+        future: getMovies,
+        builder: (context,AsyncSnapshot <List<MoviesModel>> snapshot) {
+          if(snapshot.hasData){
+              return ListView.builder(
+            itemCount:snapshot.data!.length,
+            itemBuilder:(context,index) {
+              return GestureDetector(
+                child: MyMoviesCard(
+                allMovies:snapshot.data![index],
+                ),
+                onTap: (){
+                  Navigator.push(
+                    context,
+                     MaterialPageRoute(
+                      builder: (context) {
+                    return MovieDetailsScreen(
+                      currentIndex: index,
+                      );
+                  },));
+                },
+                );
+            }
+          );
+          }else{
+            return const Center(
+              child: CircularProgressIndicator(),
             );
+          }
+
+          
         }
       ),
     );
@@ -57,10 +77,11 @@ class _AllMoviesScreenState extends State<AllMoviesScreen> {
 }
 
 class MyMoviesCard extends StatelessWidget {
-  const MyMoviesCard({
-    Key? key,
+   MyMoviesCard({
+    Key? key, this.allMovies
   }) : super(key: key);
-
+      
+      MoviesModel? allMovies;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -72,8 +93,8 @@ class MyMoviesCard extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Release Date'),
+                children:  [
+                  Text(allMovies!.title!),
                   Icon(Icons.more_horiz)
                 ],
               ),
@@ -81,6 +102,9 @@ class MyMoviesCard extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
+                    image: DecorationImage(image: NetworkImage(allMovies!.movieBanner!,),
+                    fit: BoxFit.fill,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                      color: Colors.grey[200],
                      boxShadow:[
@@ -105,9 +129,9 @@ class MyMoviesCard extends StatelessWidget {
                   ),
                   Icon(FeatherIcons.cornerUpRight)
                 ],),
-                Row(children: const [
-                  Icon(FeatherIcons.star),
-                  Text('4.5')
+                Row(children: [
+                  const Icon(FeatherIcons.star),
+                  Text(allMovies!.rtScore!)
                 ],)
               ],
              )

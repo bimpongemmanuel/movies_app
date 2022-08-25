@@ -63,7 +63,7 @@ class MovieDetailsScreen extends StatelessWidget {
                     children: [
                       Text('Description:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
                       ),
-                      Text('asdsfdshfgjhkmknygfnghnhgkhj,kjl,.m,.m,')
+                      // Text(allMovies!.description!)
                     ],
                   ),
                    Wrap(

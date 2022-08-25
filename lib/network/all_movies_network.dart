@@ -1,9 +1,10 @@
 import 'package:http/http.dart';
+import 'package:my_movie_app/Models/movies_models.dart';
 
 class AllMoviesNetwork{
   // creatinag a method to get data from 
   
-  getAllMovies() async{
+ Future<List<MoviesModel>> getAllMovies() async{
     final response = await get(Uri.parse('https://ghibliapi.herokuapp.com/films'));
 
 
@@ -11,6 +12,11 @@ class AllMoviesNetwork{
     // Check if the date is available
     if(response.statusCode == 200){
       print(response.body);
-    }else{print(response.statusCode);}
+      return moviesModelFromJson(response.body);
+    }else{
+      throw{
+        Exception('Failed to get data from API')
+      };
   }
+ }
 }
