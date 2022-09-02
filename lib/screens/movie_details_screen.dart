@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:my_movie_app/Models/movies_models.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
-  MovieDetailsScreen({Key? key,this.currentIndex}) : super(key: key);
+  MovieDetailsScreen({Key? key,this.movies}) : super(key: key);
   
-  int? currentIndex;
+  MoviesModel? movies;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,13 +16,13 @@ class MovieDetailsScreen extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height/1.7,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
               color: Colors.grey,
               image: DecorationImage(
                 fit: BoxFit.fill,
-                image: NetworkImage('https://cdn.pixabay.com/photo/2022/06/09/06/02/dr-strange-7251770_960_720.jpg'))
+                image: NetworkImage(movies!.movieBanner!))
               ),
-
+      
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment:MainAxisAlignment.spaceBetween,
@@ -56,33 +57,44 @@ class MovieDetailsScreen extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    children: [
-                      Text('Description:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        children: [
+                          Text('Description:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
+                          ),
+                          Text(movies!.description!,style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight: FontWeight.bold),)
+                        ],
                       ),
-                      // Text(allMovies!.description!)
-                    ],
-                  ),
-                   Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text('Director:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
-                      ),
-                      Text('asdsfdshfg,')
-                    ],
-                  ),
-                   Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text('Producer:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
-                      ),
-                      Text('asdsfds,')
-                    ],
-                  )
-                ],
+                    ),
+                     Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Director:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
+                          ),
+                          Text(movies!.director!,style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight: FontWeight.bold),)
+                        ],
+                    ),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Producer:',style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight:FontWeight.bold),
+                          ),
+                          Text(movies!.producer!,style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 20,fontWeight: FontWeight.bold),)
+                        ],
+                    ),
+                     )
+                  ],
+                ),
               ),
             ),
           )

@@ -3,6 +3,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:my_movie_app/Models/movies_models.dart';
 import 'package:my_movie_app/network/all_movies_network.dart';
 import 'package:my_movie_app/screens/movie_details_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AllMoviesScreen extends StatefulWidget {
   const AllMoviesScreen({Key? key}) : super(key: key);
@@ -34,21 +35,9 @@ class _AllMoviesScreenState extends State<AllMoviesScreen> {
               return ListView.builder(
             itemCount:snapshot.data!.length,
             itemBuilder:(context,index) {
-              return GestureDetector(
-                child: MyMoviesCard(
-                allMovies:snapshot.data![index],
-                ),
-                onTap: (){
-                  Navigator.push(
-                    context,
-                     MaterialPageRoute(
-                      builder: (context) {
-                    return MovieDetailsScreen(
-                      currentIndex: index,
-                      );
-                  },));
-                },
-                );
+              return MyMoviesCard(
+              allMovies:snapshot.data![index],
+              );
             }
           );
           }else{
@@ -99,35 +88,48 @@ class MyMoviesCard extends StatelessWidget {
                 ],
               ),
               Expanded(
-                child: Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(image: NetworkImage(allMovies!.movieBanner!,),
-                    fit: BoxFit.fill,
+                child:GestureDetector(
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: NetworkImage(allMovies!.movieBanner!,),
+                      fit: BoxFit.fill,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                       color: Colors.grey[200],
+                       boxShadow:[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 5,
+                          spreadRadius: 5,
+                          offset: const Offset(0,5),
+                        )
+                       ],
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                     color: Colors.grey[200],
-                     boxShadow:[
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 5,
-                        spreadRadius: 5,
-                        offset: const Offset(0,5),
-                      )
-                     ],
                   ),
+                  onTap:(){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>MovieDetailsScreen(
+                      movies: allMovies,
+                    ),));
+                  }
                 ),
               ),
+
+
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(children: const [
-                  Icon(FeatherIcons.heart),
-                  Padding(
+                Row(children: [
+                  const Icon(FeatherIcons.heart),
+                const  Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Icon(FeatherIcons.messageCircle),
                   ),
-                  Icon(FeatherIcons.cornerUpRight)
+               
+                  IconButton(onPressed: (){
+                    Share.share('MOVIE APP');
+                  },
+                   icon:const Icon(FeatherIcons.share2) )
                 ],),
                 Row(children: [
                   const Icon(FeatherIcons.star),
